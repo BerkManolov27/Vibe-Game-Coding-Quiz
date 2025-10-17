@@ -1,15 +1,22 @@
+<!-- Косйо тук идва твойата задача като ти ще си FrontEnd Кодера твойата задача ще е да оправяш HTML-а и
+ CSS-а, а Калоян понеже е нашия дизайнер ще ни каже какви цветове да избираме и всичко свързано с дизайна
+ ако имаш въпроси може да ми пишеш винаги. -->
 <!doctype html>
 <html lang="bg">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Шаблон за училищно тестче — HTML/CSS/JS в един файл</title>
+  <!-- Тук е css-а който ще променим в зависимост нашата тема за викторината. -->
   <style>
     :root{--bg:#0f1724;--card:#0b1220;--accent:#22c55e;--muted:#94a3b8;--wrong:#ef4444}
     *{box-sizing:border-box}
+
     body{font-family:Inter, system-ui, Arial; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#071029 0%, #0b1320 100%); color:#e6eef6}
     .container{width:min(760px,96%); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:22px; box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    
     header{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    
     h1{font-size:1.2rem; margin:0}
     .meta{color:var(--muted); font-size:0.9rem}
     .card{margin-top:18px; background:var(--card); padding:18px; border-radius:10px}
@@ -21,48 +28,61 @@
     .answer.correct{border-color:rgba(34,197,94,0.9); background:rgba(34,197,94,0.08)}
     .answer.wrong{border-color:rgba(239,68,68,0.9); background:rgba(239,68,68,0.06)}
     .controls{display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:10px}
+    
     button{background:var(--accent); color:#042018; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600}
+    
     button.secondary{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04)}
     .progress{height:10px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden}
     .progress > i{display:block; height:100%; background:linear-gradient(90deg,var(--accent), #60a5fa); width:0%}
     .result{text-align:center}
     .small{font-size:0.9rem; color:var(--muted)}
     @media (min-width:600px){ .answers{grid-template-columns:1fr 1fr} }
-  </style>
+      </style>
 </head>
+<!-- Основна HTML структура на страницата -->
 <body>
   <div class="container" id="app">
+     <!-- Горна част на страницата (заглавие и информация) -->
     <header>
       <div>
         <h1>Училищно тестче — шаблон</h1>
+         <!-- Информация за броя въпроси и текущия въпрос -->
         <div class="meta">Въпроси: <span id="total">0</span> · Текущ: <span id="current">0</span></div>
       </div>
       <div class="small">Лесен HTML/CSS/JS еднофайлов пример</div>
     </header>
 
+    <!-- Основна част (тук е самият тест/въпросите) -->
     <main class="card" id="quizCard">
+       <!-- Място, където ще се зарежда въпросът -->
       <div class="question" id="question">Зареждане...</div>
+       <!-- Място, където ще се появяват възможните отговори -->
       <div class="answers" id="answers"></div>
 
       <div class="controls">
         <div style="flex:1">
           <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
         </div>
+         <!-- Дясна част: бутони за навигация -->
         <div style="display:flex; gap:8px; align-items:center">
+          <!-- Бутон за преминаване към следващ въпрос -->
           <button id="nextBtn" class="secondary">Следващ</button>
+           <!-- Бутон за потвърждаване на избрания отговор -->
           <button id="submitBtn">Потвърди</button>
         </div>
       </div>
     </main>
-
+      <!-- Карта с резултатите (показва се след приключване на теста) -->
     <div class="card" id="resultCard" style="display:none; margin-top:14px">
       <div class="result">
         <h2 id="scoreTitle">Резултат</h2>
+           <!-- Текстов резултат, напр. "5 / 10" -->
         <p class="small" id="scoreText">0 / 0</p>
+         <!-- Бутон за рестартиране на теста -->
         <button id="restartBtn" style="margin-top:8px">Пробвай пак</button>
       </div>
     </div>
-
+            <!-- Долен текст с обяснение как да се променят въпросите -->
     <footer style="margin-top:12px; color:var(--muted); font-size:0.85rem">Променяй въпросите в масива <code>questions</code> в скрипта по-долу.</footer>
   </div>
 
@@ -75,7 +95,11 @@
       {q: 'Кой герой е от приказката "Червената шапчица"?', options:['Пепеляшка','Червената шапчица','Спящата красавица','Котарака в чизми'], answer:1}
     ];
 
-    // ====== Переменные приложения ======
+    // ====== променливи на приложението ======
+    // Тук идва моята работа тъй като ще съм BackEnd Кодера и аз ще програмирам функциите например:
+    //като цъкнеш този бутон какво да се случи и тн. ако искаш може да си помагаме взаимно както ти решиш
+    //на мен ми е все тая и нали ще използваме искуствения интелект но само ако наистина се задтрудним 
+    //предпочитам да си търсим инфото в интернет.
     const totalEl = document.getElementById('total');
     const currentEl = document.getElementById('current');
     const questionEl = document.getElementById('question');
