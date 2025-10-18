@@ -1,200 +1,363 @@
-<!-- Косйо тук идва твойата задача като ти ще си FrontEnd Кодера твойата задача ще е да оправяш HTML-а и
- CSS-а, а Калоян понеже е нашия дизайнер ще ни каже какви цветове да избираме и всичко свързано с дизайна
- ако имаш въпроси може да ми пишеш винаги. -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Шаблон за училищно тестче — HTML/CSS/JS в един файл</title>
-  <!-- Тук е css-а който ще променим в зависимост нашата тема за викторината. -->
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#22c55e;--muted:#94a3b8;--wrong:#ef4444}
-    *{box-sizing:border-box}
-
-    body{font-family:Inter, system-ui, Arial; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#071029 0%, #0b1320 100%); color:#e6eef6}
-    .container{width:min(760px,96%); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:22px; box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    
-    header{display:flex; align-items:center; justify-content:space-between; gap:12px}
-    
-    h1{font-size:1.2rem; margin:0}
-    .meta{color:var(--muted); font-size:0.9rem}
-    .card{margin-top:18px; background:var(--card); padding:18px; border-radius:10px}
-    .question{font-size:1.05rem; margin-bottom:14px}
-    .answers{display:grid; grid-template-columns:1fr; gap:10px}
-    .answer{background:transparent; border:1px solid rgba(255,255,255,0.06); padding:12px; border-radius:8px; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:10px}
-    .answer:hover{transform:translateY(-3px); box-shadow:0 6px 20px rgba(2,6,23,0.5)}
-    .answer.selected{border-color:var(--accent); background:rgba(34,197,94,0.06)}
-    .answer.correct{border-color:rgba(34,197,94,0.9); background:rgba(34,197,94,0.08)}
-    .answer.wrong{border-color:rgba(239,68,68,0.9); background:rgba(239,68,68,0.06)}
-    .controls{display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:10px}
-    
-    button{background:var(--accent); color:#042018; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600}
-    
-    button.secondary{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04)}
-    .progress{height:10px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden}
-    .progress > i{display:block; height:100%; background:linear-gradient(90deg,var(--accent), #60a5fa); width:0%}
-    .result{text-align:center}
-    .small{font-size:0.9rem; color:var(--muted)}
-    @media (min-width:600px){ .answers{grid-template-columns:1fr 1fr} }
-      </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Замъкът на знанието - БЕЛ матура 10. клас</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #1a2332;
+            --secondary-bg: #0f1724;
+            --accent-gold: #d4af37;
+            --accent-silver: #c0c0c0;
+            --accent-bronze: #cd7f32;
+            --success-green: #22c55e;
+            --error-red: #ef4444;
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .title-font {
+            font-family: 'Crimson Text', serif;
+        }
+        
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(26, 35, 50, 0.8), rgba(15, 23, 36, 0.9)), 
+                        url('resources/hero-castle.png') center/cover;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .golden-glow {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .answer-btn {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-gold);
+        }
+        
+        .answer-btn.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--success-green);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+        
+        .answer-btn.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--error-red);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .answer-btn.selected {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .key-icon {
+            display: inline-block;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+        
+        .key-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .timer-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--accent-gold) 0%, var(--accent-silver) 50%, var(--accent-bronze) 100%);
+            height: 6px;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .question-enter {
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .key-collect {
+            animation: keyCollect 0.8s ease-out;
+        }
+        
+        @keyframes keyCollect {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.3) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
-<!-- Основна HTML структура на страницата -->
 <body>
-  <div class="container" id="app">
-     <!-- Горна част на страницата (заглавие и информация) -->
-    <header>
-      <div>
-        <h1>Училищно тестче — шаблон</h1>
-         <!-- Информация за броя въпроси и текущия въпрос -->
-        <div class="meta">Въпроси: <span id="total">0</span> · Текущ: <span id="current">0</span></div>
-      </div>
-      <div class="small">Лесен HTML/CSS/JS еднофайлов пример</div>
-    </header>
-
-    <!-- Основна част (тук е самият тест/въпросите) -->
-    <main class="card" id="quizCard">
-       <!-- Място, където ще се зарежда въпросът -->
-      <div class="question" id="question">Зареждане...</div>
-       <!-- Място, където ще се появяват възможните отговори -->
-      <div class="answers" id="answers"></div>
-
-      <div class="controls">
-        <div style="flex:1">
-          <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+    <!-- Particles Background -->
+    <div id="particles-container" class="floating-particles"></div>
+    
+    <!-- Start Screen -->
+    <div id="startScreen" class="hero-bg flex items-center justify-center relative z-10">
+        <div class="text-center max-w-4xl mx-auto px-6">
+            <h1 class="title-font text-6xl md:text-8xl font-bold text-white mb-6 golden-glow" data-splitting>
+                Замъкът на знанието
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Влез в омагьосания замък с 100 стаи, където всяка стая е предизвикателство към твоите знания по българска литература.
+            </p>
+            <div class="glass-card p-8 mb-8 max-w-md mx-auto">
+                <h3 class="title-font text-2xl text-yellow-400 mb-4">Какво те очаква?</h3>
+                <ul class="text-left text-gray-200 space-y-2">
+                    <li>• 100 въпроса от българска литература</li>
+                    <li>• 3 нива на трудност (бронзово, сребърно, златно)</li>
+                    <li>• 120 минути за основните въпроси</li>
+                    <li>• Финална теза за 10 минути</li>
+                    <li>• Оценка според събраните ключове</li>
+                </ul>
+            </div>
+            <button id="startBtn" class="bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white font-bold py-4 px-8 rounded-full text-xl transition-all duration-300 transform hover:scale-105 golden-glow">
+                Влез в замъка
+            </button>
         </div>
-         <!-- Дясна част: бутони за навигация -->
-        <div style="display:flex; gap:8px; align-items:center">
-          <!-- Бутон за преминаване към следващ въпрос -->
-          <button id="nextBtn" class="secondary">Следващ</button>
-           <!-- Бутон за потвърждаване на избрания отговор -->
-          <button id="submitBtn">Потвърди</button>
-        </div>
-      </div>
-    </main>
-      <!-- Карта с резултатите (показва се след приключване на теста) -->
-    <div class="card" id="resultCard" style="display:none; margin-top:14px">
-      <div class="result">
-        <h2 id="scoreTitle">Резултат</h2>
-           <!-- Текстов резултат, напр. "5 / 10" -->
-        <p class="small" id="scoreText">0 / 0</p>
-         <!-- Бутон за рестартиране на теста -->
-        <button id="restartBtn" style="margin-top:8px">Пробвай пак</button>
-      </div>
     </div>
-            <!-- Долен текст с обяснение как да се променят въпросите -->
-    <footer style="margin-top:12px; color:var(--muted); font-size:0.85rem">Променяй въпросите в масива <code>questions</code> в скрипта по-долу.</footer>
-  </div>
-
-  <script>
-    // ====== Примерни въпроси (редактирай тук) ======
-    const questions = [
-      {q: 'Кой е столицата на България?', options:['София','Пловдив','Варна','Бургас'], answer:0},
-      {q: 'Колко е 5 + 7?', options:['10','11','12','13'], answer:2},
-      {q: 'Кой газ използваме да дишаме?', options:['Кислород','Водород','Метан','Азот'], answer:0},
-      {q: 'Кой герой е от приказката "Червената шапчица"?', options:['Пепеляшка','Червената шапчица','Спящата красавица','Котарака в чизми'], answer:1}
-    ];
-
-    // ====== променливи на приложението ======
-    // Тук идва моята работа тъй като ще съм BackEnd Кодера и аз ще програмирам функциите например:
-    //като цъкнеш този бутон какво да се случи и тн. ако искаш може да си помагаме взаимно както ти решиш
-    //на мен ми е все тая и нали ще използваме искуствения интелект но само ако наистина се задтрудним 
-    //предпочитам да си търсим инфото в интернет.
-    const totalEl = document.getElementById('total');
-    const currentEl = document.getElementById('current');
-    const questionEl = document.getElementById('question');
-    const answersEl = document.getElementById('answers');
-    const progressBar = document.getElementById('progressBar');
-    const submitBtn = document.getElementById('submitBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const resultCard = document.getElementById('resultCard');
-    const quizCard = document.getElementById('quizCard');
-    const scoreTitle = document.getElementById('scoreTitle');
-    const scoreText = document.getElementById('scoreText');
-    const restartBtn = document.getElementById('restartBtn');
-
-    let currentIndex = 0;
-    let selected = null;
-    let score = 0;
-
-    function start(){
-      totalEl.textContent = questions.length;
-      currentIndex = 0;
-      score = 0;
-      selected = null;
-      showQuestion();
-      resultCard.style.display = 'none';
-      quizCard.style.display = 'block';
-    }
-
-    function showQuestion(){
-      const q = questions[currentIndex];
-      questionEl.textContent = q.q;
-      answersEl.innerHTML = '';
-      q.options.forEach((opt, idx)=>{
-        const btn = document.createElement('button');
-        btn.className = 'answer';
-        btn.type = 'button';
-        btn.innerHTML = `<span style="flex:1">${opt}</span>`;
-        btn.onclick = ()=> selectAnswer(idx, btn);
-        answersEl.appendChild(btn);
-      });
-      selected = null;
-      currentEl.textContent = currentIndex + 1;
-      updateProgress();
-      submitBtn.disabled = false;
-    }
-
-    function selectAnswer(idx, btn){
-      // премахваме избора от всички
-      Array.from(answersEl.children).forEach(c=>c.classList.remove('selected'));
-      btn.classList.add('selected');
-      selected = idx;
-    }
-
-    function updateProgress(){
-      const pct = Math.round((currentIndex / questions.length) * 100);
-      progressBar.style.width = pct + '%';
-    }
-
-    submitBtn.addEventListener('click', ()=>{
-      if (selected === null){
-        alert('Моля, избери отговор.');
-        return;
-      }
-      const q = questions[currentIndex];
-      // маркираме отговорите
-      Array.from(answersEl.children).forEach((el, idx)=>{
-        el.classList.remove('selected');
-        if (idx === q.answer) el.classList.add('correct');
-        else if (idx === selected && idx !== q.answer) el.classList.add('wrong');
-        el.disabled = true;
-      });
-
-      if (selected === q.answer) score++;
-      submitBtn.disabled = true;
-    });
-
-    nextBtn.addEventListener('click', ()=>{
-      if (currentIndex < questions.length - 1){
-        currentIndex++;
-        showQuestion();
-      } else {
-        showResult();
-      }
-    });
-
-    function showResult(){
-      quizCard.style.display = 'none';
-      resultCard.style.display = 'block';
-      scoreTitle.textContent = `Ти направи: ${score} / ${questions.length}`;
-      scoreText.textContent = `Точки: ${score} — Процент: ${Math.round((score/questions.length)*100)}%`;
-    }
-
-    restartBtn.addEventListener('click', start);
-
-    // стартираме
-    start();
-  </script>
+    
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden min-h-screen p-6 relative z-10">
+        <!-- Header -->
+        <div class="glass-card p-6 mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-6">
+                    <h1 class="title-font text-3xl font-bold text-yellow-400">Замъкът на знанието</h1>
+                    <div class="flex items-center gap-4">
+                        <span class="key-icon text-2xl">🥉</span>
+                        <span id="bronzeCount" class="text-xl font-bold text-yellow-600">0</span>
+                        <span class="key-icon text-2xl">🥈</span>
+                        <span id="silverCount" class="text-xl font-bold text-gray-300">0</span>
+                        <span class="key-icon text-2xl">🥇</span>
+                        <span id="goldCount" class="text-xl font-bold text-yellow-400">0</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-center">
+                        <div id="timer" class="mono-font text-2xl font-bold text-yellow-400 timer-pulse">120:00</div>
+                        <div class="text-sm text-gray-400">остават</div>
+                    </div>
+                    <button id="surrenderBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        Предай се
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="mt-4">
+                <div class="flex justify-between text-sm text-gray-400 mb-2">
+                    <span>Въпрос <span id="currentQuestion">1</span> от 100</span>
+                    <span id="progressPercent">1%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div id="progressBar" class="progress-bar w-1 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question Card -->
+        <div class="glass-card p-8 mb-6 question-enter">
+            <div class="mb-6">
+                <h2 id="questionText" class="title-font text-2xl md:text-3xl text-white leading-relaxed">
+                    Зареждане на въпрос...
+                </h2>
+            </div>
+            
+            <!-- Answer Options -->
+            <div id="answerOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Answers will be populated by JavaScript -->
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <button id="hintBtn" class="hidden bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors">
+                    💡 Помощ
+                </button>
+                <div class="flex gap-4">
+                    <button id="nextBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors">
+                        Следващ въпрос
+                    </button>
+                    <button id="submitBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-3 rounded-lg font-bold transition-colors">
+                        Потвърди отговор
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feedback Message -->
+        <div id="feedbackMsg" class="hidden glass-card p-4 mb-6 text-center">
+            <p id="feedbackText" class="text-lg font-medium"></p>
+        </div>
+    </div>
+    
+    <!-- Thesis Screen -->
+    <div id="thesisScreen" class="hidden min-h-screen p-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-8 mb-6">
+                <h1 class="title-font text-4xl font-bold text-yellow-400 mb-4 text-center">
+                    Финално предизвикателство
+                </h1>
+                <p class="text-xl text-gray-200 mb-6 text-center">
+                    Напиши кратка теза на тема:
+                </p>
+                <div class="bg-gradient-to-r from-yellow-600 to-yellow-500 text-white p-4 rounded-lg mb-6">
+                    <h2 id="thesisTopic" class="title-font text-2xl font-bold text-center">
+                        "Силата на знанието в съвременния свят"
+                    </h2>
+                </div>
+                <div class="text-center mb-6">
+                    <div id="thesisTimer" class="mono-font text-3xl font-bold text-yellow-400 timer-pulse">10:00</div>
+                    <p class="text-gray-400">остават за тезата</p>
+                </div>
+            </div>
+            
+            <div class="glass-card p-8">
+                <textarea 
+                    id="thesisInput" 
+                    placeholder="Напиши тук своята теза (150-200 думи)..."
+                    class="w-full h-64 bg-transparent border border-gray-600 rounded-lg p-4 text-white resize-none focus:border-yellow-400 focus:outline-none"
+                ></textarea>
+                
+                <div class="flex justify-between items-center mt-4">
+                    <div class="text-gray-400">
+                        Думи: <span id="wordCount" class="text-yellow-400 font-bold">0</span>
+                    </div>
+                    <button id="submitThesisBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-3 rounded-lg font-bold transition-colors">
+                        Предай тезата
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="hidden min-h-screen p-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-8 mb-6 text-center">
+                <h1 class="title-font text-5xl font-bold text-yellow-400 mb-6">
+                    🏆 Резултати 🏆
+                </h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-b from-yellow-600 to-yellow-700 p-6 rounded-lg">
+                        <div class="text-4xl mb-2">🥉</div>
+                        <div class="text-3xl font-bold text-white" id="finalBronze">0</div>
+                        <div class="text-yellow-200">Бронзови ключа</div>
+                    </div>
+                    <div class="bg-gradient-to-b from-gray-400 to-gray-500 p-6 rounded-lg">
+                        <div class="text-4xl mb-2">🥈</div>
+                        <div class="text-3xl font-bold text-white" id="finalSilver">0</div>
+                        <div class="text-gray-200">Сребърни ключа</div>
+                    </div>
+                    <div class="bg-gradient-to-b from-yellow-400 to-yellow-500 p-6 rounded-lg">
+                        <div class="text-4xl mb-2">🥇</div>
+                        <div class="text-3xl font-bold text-white" id="finalGold">0</div>
+                        <div class="text-yellow-200">Златни ключа</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-lg mb-6">
+                    <div class="text-2xl font-bold text-white mb-2">Твоята оценка</div>
+                    <div id="finalGrade" class="text-6xl font-bold text-yellow-400">5.50</div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-yellow-400 mb-4">Статистика</h3>
+                        <div class="space-y-2 text-gray-200">
+                            <div>Верни отговори: <span id="correctAnswers" class="text-green-400 font-bold">0</span></div>
+                            <div>Грешни отговори: <span id="wrongAnswers" class="text-red-400 font-bold">0</span>
+                            </div>
+                            <div>Използвани подсказки: <span id="usedHints" class="text-blue-400 font-bold">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-yellow-400 mb-4">Анализ</h3>
+                        <div id="performanceAnalysis" class="text-gray-200 space-y-2">
+                            <!-- Analysis will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="restartBtn" class="bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white font-bold py-4 px-8 rounded-full text-xl transition-all duration-300 transform hover:scale-105 golden-glow">
+                    Играй отново
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="main.js"></script>
 </body>
 </html>
